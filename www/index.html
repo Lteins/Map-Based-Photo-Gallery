@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Cordova Settings -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <title>Map Photo Album</title>
+  <!-- Cordova Settings -->
+
+  <!-- FrameWork Support -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script src="https://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA19xfmT-Kl63FZkjwIiXrkuCWrGrR0MYc"></script>
+    <script src="js/velocity.js"></script>
+  <!-- FrameWork Support -->
+
+  <!-- Customised CSS and JS -->
+    <link rel="stylesheet" type="text/css" href="css/customised.css">
+    <script src="js/customised.js"> </script>
+  <!-- Customised CSS and JS -->
+
+</head> 
+
+<body id="bd"> 
+<div id="body">
+    <div class="header"><span></span>
+        <h1 align='center' Vertical-align='middle' style="font-size:4em;">Map Album</h1>
+    </div>
+    <div class="horizental-line" style="top:10%"></div>
+    <div class="page_content" id="page_content">
+      	<!-- Start of first page: #Map_Page -->
+      	<div activate="1" class="web_page" id="Map_Page" style="display:block;">
+      		<div id="map" style=""></div>
+              <div style=" position:absolute; right:5%; top:5%; height:15%; width:14%; z-index:200;background-color:white; border: 1px orange solid;">
+                  <a  onclick="to_camera(0)"><img  id="album" src="img/album.png" style="width:100%; height:70%;"></a>
+              </div>
+      	</div><!-- /page one -->
+        <!-- Start of Second page: #Config_Page -->
+      	<div activate="0" class="web_page" id="Config_Page" style="display:block;">
+              <!-- Input Box For Longitude -->
+              <div class="input_box">
+                   <h3  style="margin:0%; height:40%;  text-align:center;">Longitude</h3> 
+                   <input id='input_longitude' style="text-align:center; display:inline-block; width:100%;  margin:0%; height:60%;" type="text" name="fname">
+              </div>
+              
+              <!-- Input Box For Latitude -->
+              <div class="input_box">
+                   <h3  style="margin:0%; height:40%; text-align:center;">Latitude</h3> 
+                   <input id='input_latitude' style="text-align:center; display:inline-block; width:100%;  margin:0%; height:60%;" type="text" name="fname">
+              </div>
+              <!-- Button For the GeloLocation Menu -->
+                <div  style=" border-top: 4px solid pink; border-left: 4px solid pink;position:absolute; left:80%; margin:0%; height:60%; width:20%;  background-color:lightgrey;">
+                </div>
+                <div style="position:absolute; left:85%; width:10%; height:10%; top:41%; text-align:center;">
+                     <a onclick="geo_add()" ><img style="height:100%; " src="img/tick.png"></a>
+                </div>
+
+                <div  style="position:absolute; left:85%; width:10%; height:10%; top:53%; text-align:center;">
+                    <a  onclick="delete_geo_item()" ><img style="height:100%; " src="img/trash.png"></a>
+                </div>
+
+                <div  style="position:absolute; left:85%; width:10%; height:10%; top:65%; text-align:center;">
+                    <a  onclick="des_reveal()"><img  id="trash" src="img/info.png" style="height:100%;"></a>
+                 </div>
+
+                 <div  style="position:absolute; left:85%; width:10%; height:10%; top:77%; text-align:center;">
+                     <a onclick="get_current_position()" ><img style="height:100%; " src="img/y_position.png" ></a>
+                 </div>
+
+                 <div  style="position:absolute; left:85%; width:10%; height:10%; top:89%; text-align:center;">
+                    <a  onclick="clc()" ><img style="height:100%; " src="img/restart.png" ></a>
+                </div>
+
+                <div id="stored_geo" style="overflow:scroll; position:absolute; left:0%; margin:0%; width:80%; height:60%; background-color:lightgreen;">
+                
+                </div>
+              <!--End Button For the GeloLocation Menu -->
+         </div><!-- /page two -->
+         <div activate="0" class="web_page" id="Camera_Page">
+                <a onclick="img_delete()"><img width="20%"  src="img/cross.png" style='position:absolute; bottom:1%; right:1%;z-index:201 !important;'></a>
+                <img width="100%" height="100%" src="img/test.png" id="myimage" style="position:absolute; display:block; z-index:1 !important;">
+            
+         </div><!-- /page three -->
+
+    </div>
+
+    <div id="geo_description" class='popup' style=" display:none; height:70%;">
+          <div style="position:relative; background-color:lightblue; z-index:101; top:0%; left:0%; width:100%; height:10%;"></div>
+    </div>
+
+    <div id="geo_name" class='popup' style="display:none;height:20%; ">
+            <div style="text-align:center;  position:relative; background-color:lightblue; z-index:101; top:0%; left:0%; width:100%; height:30%;"> 
+            <h1>Name the Geo</h1> 
+            </div>
+            <div style="background-color:orange; height:70%; margin:0%;">
+                 <textarea id='input_geo_name' style="margin:0px; font-size:2em; border: 1px solid pink; display:inline-block; width:100%;   height:90%;" rows='4' cols='50'></textarea>
+                 <div style="margin:0px; position:relative; top:-5%; width:100%; height:50%; background-color:lightblue;">
+                     <a onclick="to_desc()" style='position:absolute; left:10%;height:100%;'><img style="height:100%; " src="img/tick.png"></a>
+                     <a onclick="back_config()" style='position:absolute; right:10%; height:100%;' ><img style="height:100%; " src="img/cross.png"></a>
+                 </div>
+            </div>
+    </div>
+
+    <div id="geo_desc" class='popup' style="height:20%; display:none ;">
+            <div style="text-align:center;  position:relative; background-color:lightblue; z-index:101; top:0%; left:0%; width:100%; height:30%;"> 
+            <h1>Basic Description</h1> 
+            </div>
+            <div style="background-color:orange; height:70%; margin:0%;">
+                 <textarea id='input_geo_desc' style="margin:0px; font-size:2em; border: 1px solid pink; display:inline-block; width:100%;   height:90%;" rows='4' cols='50'></textarea>
+                 <div style="margin:0px; position:relative; top:-5%; width:100%; height:50%; background-color:lightblue;">
+                     <a onclick="build_geo()" style='position:absolute; left:10%;height:100%;'><img style="height:100%; " src="img/tick.png"></a>
+                     <a onclick="back_geo_name()" style='position:absolute; right:10%; height:100%;' ><img style="height:100%; " src="img/cross.png"></a>
+                 </div>
+            </div>
+    </div>
+
+    <div id="geo_desc_reveal" class='popup' style="height:20%; display:none ;">
+            <div style="text-align:center;  position:relative; background-color:lightblue; z-index:101; top:0%; left:0%; width:100%; height:30%;"> 
+            <h1>Basic Description</h1> 
+            </div>
+            <div style="background-color:orange; height:70%; margin:0%;">
+                 <textarea id='output_geo_desc' style="margin:0px; font-size:2em; border: 1px solid pink; display:inline-block; width:100%;   height:90%;" rows='4' cols='50'></textarea>
+                 <div style="margin:0px; position:relative; top:-5%; width:100%; height:50%; background-color:lightblue;">
+                     <a onclick="back_config_page()" style='position:absolute; left:30%;height:100%;'><img style="height:100%; " src="img/go_right.png"></a>
+                 </div>
+            </div>
+    </div>
+        
+    <div class="horizental-line" style="top:90%"></div>
+
+    <div class="footer">
+    	<h1 style="font-size:1em;"><a onclick="to_map()"  id="to_map" class="nav" type="button" style="background-color:white;"><i style="font-size:3em; color:black;" class="glyphicon glyphicon-home"></i> </a></h1>
+    	<h1 style="font-size:1em;"><a onclick="to_camera(1)" type="button" class="nav" id="to_camera"><i style="font-size:3em; color:black;" class="glyphicon glyphicon-camera"></i></a></h1>
+    	<h1 style="font-size:1em;"><a onclick="to_config()" class="nav" id="to_config" type="button"><i style="font-size:3em; color:black;" class="glyphicon glyphicon-cog"></i></a></h1>
+    </div>
+
+</div>
+<!-- Cordova Extra js -->
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript" src="js/index.js"></script>
+</body>
+
+</html>
